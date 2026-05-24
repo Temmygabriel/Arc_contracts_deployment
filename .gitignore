@@ -1,0 +1,10 @@
+# Foundry
+out/
+cache/
+broadcast/
+
+# Environment
+.env
+
+# Dependencies
+lib/
