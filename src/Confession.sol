@@ -11,7 +11,7 @@ contract Confession {
         string category;
         uint256 timestamp;
         uint256 absolutions;
-        bool anonymous;
+        bool isAnonymous;
         address author;
     }
 
@@ -20,13 +20,13 @@ contract Confession {
     mapping(uint256 => mapping(address => bool)) public hasAbsolved;
     mapping(address => uint256[]) public myConfessions;
 
-    event Confessed(uint256 indexed id, string category, bool anonymous, uint256 timestamp);
+    event Confessed(uint256 indexed id, string category, bool isAnonymous, uint256 timestamp);
     event AbsolutionGranted(uint256 indexed id, address indexed absolver, uint256 totalAbsolutions);
 
     function confess(
         string calldata text,
         string calldata category,
-        bool anonymous
+        bool makeAnonymous
     ) external returns (uint256) {
         require(bytes(text).length > 0, "Confession: empty text");
         require(bytes(text).length <= 500, "Confession: too long");
@@ -38,15 +38,15 @@ contract Confession {
             category: category,
             timestamp: block.timestamp,
             absolutions: 0,
-            anonymous: anonymous,
-            author: anonymous ? address(0) : msg.sender
+            isAnonymous: makeAnonymous,
+            author: makeAnonymous ? address(0) : msg.sender
         }));
 
-        if (!anonymous) {
+        if (!makeAnonymous) {
             myConfessions[msg.sender].push(id);
         }
 
-        emit Confessed(id, category, anonymous, block.timestamp);
+        emit Confessed(id, category, makeAnonymous, block.timestamp);
         return id;
     }
 
@@ -65,12 +65,12 @@ contract Confession {
         string memory category,
         uint256 timestamp,
         uint256 absolutions,
-        bool anonymous,
+        bool isAnonymous,
         address author
     ) {
         require(id < confessions.length, "Confession: invalid id");
         ConfessionRecord memory c = confessions[id];
-        return (c.text, c.category, c.timestamp, c.absolutions, c.anonymous, c.author);
+        return (c.text, c.category, c.timestamp, c.absolutions, c.isAnonymous, c.author);
     }
 
     function getMyConfessions(address account) external view returns (uint256[] memory) {

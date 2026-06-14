@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 /// @title Streak
-/// @notice Track daily check-in streaks. Miss a day and your streak resets — publicly.
+/// @notice Track daily check-in streaks. Miss a day and your streak resets -- publicly.
 /// @dev One check-in per calendar day (UTC). The contract enforces the 24h window.
 contract Streak {
     struct StreakRecord {
@@ -46,7 +46,7 @@ contract Streak {
 
     function checkIn() external {
         StreakRecord storage s = streaks[msg.sender];
-        require(s.active, "Streak: no active streak — call start() first");
+        require(s.active, "Streak: no active streak - call start() first");
         require(block.timestamp >= s.lastCheckIn + WINDOW, "Streak: already checked in today");
 
         bool streakBroken = s.lastCheckIn > 0 && block.timestamp > s.lastCheckIn + GRACE;
